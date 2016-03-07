@@ -1,0 +1,180 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+_int64 a[21][21][2];
+_int64 b[21];
+int v[21];
+_int64 c;
+int pre;
+int n;
+int main ()
+{
+//	fstream cin("in.txt");
+	a[1][1][0] = 1;
+	a[1][1][1] = 1;
+	a[2][1][0] = 0;
+	a[2][1][1] = 1;
+	a[2][2][0] = 1;
+	a[2][2][1] = 0;
+	int i,j,k;
+	for ( i = 3; i <= 20; i++ )//length
+	{
+		for ( j = 1; j <= i; j++ )//the first dig
+		{
+			a[i][j][0] = 0;
+			a[i][j][1] = 0;
+			for ( k = 1; k <= i; k++ )
+			{
+				if ( k > j )
+					a[i][j][1] += a[i-1][k-1][0];
+				else if ( k < j )
+					a[i][j][0] += a[i-1][k][1];
+			}
+		}
+	}
+/*	for ( i = 1; i <= 20; i++ )
+	{
+		b[i] = 0;
+		for ( j = 1; j <= i; j++ )
+			b[i] += (a[i][j][0]+a[i][j][1]);
+		printf("%I64d\n",b[i]);
+	}*/
+	void print(int k);
+	void h( int j, int &g);
+	int tcase,it;
+	int f( int j);
+	cin>>tcase;
+	int up;
+	char ch[100];
+	for ( it = 0; it < tcase; it++ )
+	{
+		memset(v,0,sizeof(v));
+		cin>>n>>ch;
+		c = _atoi64(ch);
+		up = f(n);
+		j = n-1;
+		while ( j > 1 )
+		{
+			h(j,up);
+			j--;
+		}
+		for ( j = 1; j <= n; j++ )
+		{
+			if ( v[j] == 0 )
+			{
+				cout<<" "<<j;
+				break;
+			}
+		}
+		cout<<endl;
+	}
+	return 0;
+}
+void print ( int k )
+{
+	int c = 0;
+	int i = 0;
+	while ( c < k && i<=n )
+	{
+		i++;
+		if ( v[i] == 0 )
+			c++;
+	}
+	if ( i > n )
+	{
+		i = n;
+		while ( i >= 1 )
+		{
+			if ( v[i] == 1 )
+				continue;
+			i--;
+		}
+	}
+	v[i] = 1;
+	pre = i;
+	printf(" %d",i);
+}
+int wh ( int pre )
+{
+	int i = pre+1;
+	while ( i <= n && v[i] == 1 )
+		i++;
+	int r = 0;
+//	if ( i > n )
+	{
+//		i = n;
+		while ( i > 0 )
+		{
+			if ( v[i] == 0 )
+				r++;
+			i--;
+		}
+	}
+	return r;
+}
+void h ( int j, int &g )
+{
+	int i;
+	if ( g == 1 )
+	{
+		i = wh(pre);
+		g = 0;
+		while ( c > 0 )
+		{
+			c -= a[j][i][0];
+			i++;
+		}
+		if ( c <= 0 )
+		{
+			c += a[j][i-1][0];
+		}
+		i--;
+		if ( i > j )
+			i = j;
+		print(i);
+	}
+	else
+	{
+		i = 1;
+		g = 1;
+		while ( c > 0 )
+		{
+			c -= a[j][i][1];
+			i++;
+		}
+		if ( c <= 0 )
+		{
+			c += a[j][i-1][1];
+		}
+		i--;
+		if ( i > j )
+			i = j;
+		print(i);
+	}
+}
+int f (  int j )
+{
+	int i = 1;
+	int g;
+	while ( c > 0 )
+	{
+		c -= a[j][i][0];
+		g = 0;
+		if ( c <= 0 )
+			break;
+		c -= a[j][i][1];
+		g = 1;
+		i++;
+	}
+	if ( g == 1 )
+	{
+		i--;
+		c += a[j][i][1];
+	}
+	else
+		c += a[j][i][0];
+	pre = i;
+	v[i] = 1;
+	cout<<i;
+	return g;
+}

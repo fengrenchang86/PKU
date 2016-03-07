@@ -1,0 +1,104 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+const int inf = 2000000000;
+bool prime[11000];
+int w[11000];
+struct ac
+{
+	int primNum;
+	int step;
+};
+queue<ac>que;
+void make ( )
+{
+	memset(prime,true,sizeof(prime));
+	int i,j;
+	for ( i = 2; i <= 10000; i++ )
+	{
+		if ( prime[i] == false )
+			continue;
+		for ( j = 2; i*j < 10000; j++ )
+			prime[i*j] = false;
+	}
+}
+void init ()
+{
+	int i;
+	for ( i = 1000; i <= 10000; i++ )
+		w[i] = inf;
+}
+bool comp ( int x, int y )
+{
+	int i = 0;
+	while ( x )
+	{
+		if ( x % 10 == y % 10 )
+			i++;
+		x/=10;
+		y/=10;
+	}
+	if ( i == 3 )
+		return true;
+	else
+		return false;
+}
+void solve ()
+{
+	int begin,end,i,j;
+	scanf("%d%d",&begin,&end);
+	if ( prime[end] == false || prime[begin] == false )
+	{
+		printf("Impossible\n");
+		return;
+	}
+	init();
+	while ( !que.empty() )
+		que.pop();
+	ac p,q;
+	p.primNum = begin;
+	p.step = 0;
+	w[begin] = 0;
+	que.push(p);
+	while ( !que.empty() )
+	{
+		p = que.front();
+		que.pop();
+		if ( w[p.primNum] < p.step )
+			continue;
+		for ( i = 1; i <= 1000; i*=10 )
+		{
+			for ( j = 1; j <= 9; j++ )
+			{
+				q.primNum = p.primNum+i*j;
+				if ( comp(q.primNum,p.primNum) == false )
+					continue;
+				q.step = p.step+1;
+				if ( q.primNum < 10000 && prime[q.primNum] && w[q.primNum] > q.step )
+				{
+					w[q.primNum] = q.step;
+					que.push(q);
+				}
+				q.primNum = p.primNum-i*j;
+				if ( q.primNum > 1000 && prime[q.primNum] && w[q.primNum] > q.step )
+				{
+					w[q.primNum] = q.step;
+					que.push(q);
+				}
+			}
+		}
+	}
+	if ( w[end] == inf )
+		printf("Impossible\n");
+	else
+		printf("%d\n",w[end]);
+}
+int main ()
+{
+	make();
+	int tc;
+	scanf("%d",&tc);
+	while ( tc-- )
+		solve();
+	return 0;
+}

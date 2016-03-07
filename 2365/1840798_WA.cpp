@@ -1,0 +1,49 @@
+#include <iostream.h>
+#include <math.h>
+#include <iomanip.h>
+const double PI = 3.1415926;
+void main()
+{
+	double data[100][2];
+	int n;
+	int r;
+	int i;
+	double l1;
+	double l2;
+	double x1;
+	double x2;
+	double x3;
+	double y1;
+	double y2;
+	double y3;
+	double k;
+	double l = 0.0;
+	double rope = 0.0;
+	cin>>n>>r;
+	for ( i = 0; i < n; i++ )
+		cin>>data[i][0]>>data[i][1];
+	for ( i = 0; i < n; i++ )
+	{		
+		x1 = data[i%n][0];
+		y1 = data[i%n][1];
+
+		x2 = data[(i+1)%n][0];
+		y2 = data[(i+1)%n][1];
+
+		x3 = data[(i+2)%n][0];
+		y3 = data[(i+2)%n][1];
+
+		l1 = (x2-x1)*(x2-x1)+(y2-y1)*(y2-y1);
+		l2 = (x3-x2)*(x3-x2)+(y3-y2)*(y3-y2);
+		l1 = sqrt(l1);
+		l2 = sqrt(l2);
+		l += l1;
+		k = (x1-x2)*(x3-x2)+(y1-y2)*(y3-y2);
+		k = fabs(k);
+		k = k / (l1*l2);
+		k = acos(k);
+		k = r*k;
+		rope += k;
+	}
+	cout<<setiosflags(ios::fixed)<<setprecision(2)<<rope+l<<endl;
+}
